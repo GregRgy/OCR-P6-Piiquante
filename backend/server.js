@@ -39,7 +39,7 @@ const server = http.createServer(app);
 
 server.on('error', errorHandler);
 server.on('listening', () => {
-    const adress = server.adress();
+    const adress = server.address();
     const bind = typeof adress === 'string' ? 'pipe ' + adress : 'port ' + port;
     console.log('listening on ' + bind);
 });
