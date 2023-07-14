@@ -6,6 +6,13 @@ const productRoutes = require('./routes/product');
 
 const app = express();
 
+mongoose.connect(
+    "mongodb+srv://GregRgy:gpawn@cluster01.3ia81ri.mongodb.net/?retryWrites=true&w=majority", //Add your connection string from MongoDB
+    { useNewUrlParser: true, 
+      useUnifiedTopology: true })
+      .then(() => console.log('Connection à MongoDB réussie'))
+      .catch(() => console.log('Connection à MongoDB échouée'));
+
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
