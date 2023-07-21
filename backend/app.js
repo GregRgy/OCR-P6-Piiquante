@@ -3,9 +3,6 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const path = require('path');
 
-const mongoSanitize = require('express-mongo-sanitize');
-const helmet = require("helmet");
-
 const saucesRoutes = require('./routes/sauce');
 const userRoutes = require('./routes/user');
 
@@ -27,11 +24,6 @@ app.use((req, res, next) =>
 });
 
 app.use(bodyParser.json()); 
-
-app.use(mongoSanitize()); 
-app.use(helmet()); 
-
-app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));
 
 
 app.use('/images', express.static(path.join(__dirname, 'images'))); 
