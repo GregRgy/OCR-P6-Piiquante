@@ -21,7 +21,7 @@ Installer Angular CLI\
 Installer Nodemon\
 Se référer au fichier package.json pour installer les dépendances nécessaires\
 Mettre en place le fichier .env à la racine du dossier backend\
-Fichier .env : les détails seront donnés après contact\
+Créer un fichier .env puis je vous donnerai en privé les autorisation nécessaires.
 
 ### Frontend : 
 
