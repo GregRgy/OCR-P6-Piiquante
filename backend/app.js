@@ -13,7 +13,7 @@ mongoose
   .connect(process.env.MONGO_URI)
 
   .then(() => console.log("Connexion à MongoDB réussie !"))
-  .catch(() => console.log("Connexion à MongoDB échouée !"));
+  .catch((error) => console.error("Erreur de connexion à MongoDB :", error));
 
 const app = express();
 
