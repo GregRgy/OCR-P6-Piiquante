@@ -34,7 +34,7 @@ app.use(express.json());
 
 app.use(mongoSanitize());
 app.use(helmet());
-app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" })); // autorisation de ressources chargées depuis des domaines différents
+app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" })); // autorisation de ressources chargées depuis des domaines différents (ex : fetch host300 vers host4200)
 
 app.use("/images", express.static(path.join(__dirname, "images")));
 app.use("/api/sauces", saucesRoutes);
