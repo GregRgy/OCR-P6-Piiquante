@@ -30,48 +30,75 @@ function getImageUrl(req) {
 exports.modifySauce = (req, res, next) => {
   const userId = res.locals.userId;
   const sauceId = req.params.id;
-  let sauce = req.body;
-  let image;
+  
+  // Recherchez la sauce dans la base de données
+  Sauce.findOne({ _id: sauceId })
+    .then((sauce) => {
+      if (!sauce) {
+        return res.status(404).json({ error: "Sauce non trouvée." });
+      }
+      
+      // Vérifiez si l'utilisateur est propriétaire de la sauce
+      if (sauce.userId !== userId) {
+        return res.status(403).json({ error: "Accès refusé : vous n'êtes pas le propriétaire de cette sauce." });
+      }
 
-  if (req.file) {
-    sauce = JSON.parse(req.body.sauce);
-    image = getImageUrl(req);
-  }
+      let image;
 
-  const updateFields = {};
+      if (req.file) {
+        sauce = JSON.parse(req.body.sauce);
+        image = getImageUrl(req);
+      }
 
-  if (sauce.name) {
-    updateFields.name = sauce.name;
-  }
-  if (sauce.heat) {
-    updateFields.heat = sauce.heat;
-  }
-  if (sauce.manufacturer) {
-    updateFields.manufacturer = sauce.manufacturer;
-  }
-  if (sauce.description) {
-    updateFields.description = sauce.description;
-  }
+      const updateFields = {};
 
-  if (image) {
-    updateFields.imageUrl = image;
-  }
+      if (sauce.name) {
+        updateFields.name = sauce.name;
+      }
+      if (sauce.heat) {
+        updateFields.heat = sauce.heat;
+      }
+      if (sauce.manufacturer) {
+        updateFields.manufacturer = sauce.manufacturer;
+      }
+      if (sauce.description) {
+        updateFields.description = sauce.description;
+      }
 
-  const updateQuery = { $set: updateFields };
+      if (image) {
+        updateFields.imageUrl = image;
+      }
 
-  Sauce.updateOne({ _id: sauceId, userId: userId }, updateQuery)
-    .then(() => res.status(200).json({ message: "Sauce modifiée" }))
-    .catch((error) =>
-      res.status(400).json({ error: "Échec de la modification de la sauce." })
-    );
+      const updateQuery = { $set: updateFields };
+
+      Sauce.updateOne({ _id: sauceId }, updateQuery)
+        .then(() => res.status(200).json({ message: "Sauce modifiée" }))
+        .catch((error) =>
+          res.status(400).json({ error: "Échec de la modification de la sauce." })
+        );
+    })
+    .catch((error) => res.status(500).json({ error }));
 };
 
 exports.deleteSauce = (req, res, next) => {
-  Sauce.findOne({ _id: req.params.id }).then((sauce) => {
-    Sauce.deleteOne({ _id: req.params.id })
-      .then(() => res.status(200).json({ message: "Sauce supprimée" }))
-      .catch((error) => res.status(400).json({ error }));
-  });
+  const userId = res.locals.userId;
+  
+  Sauce.findOne({ _id: req.params.id })
+    .then((sauce) => {
+      if (!sauce) {
+        return res.status(404).json({ error: "Sauce non trouvée." });
+      }
+      
+      // Vérifiez si l'utilisateur est propriétaire de la sauce
+      if (sauce.userId !== userId) {
+        return res.status(403).json({ error: "Accès refusé : vous n'êtes pas autorisé à supprimer cette sauce." });
+      }
+
+      Sauce.deleteOne({ _id: req.params.id })
+        .then(() => res.status(200).json({ message: "Sauce supprimée" }))
+        .catch((error) => res.status(400).json({ error }));
+    })
+    .catch((error) => res.status(500).json({ error }));
 };
 
 exports.getAllSauces = (req, res, next) => {
